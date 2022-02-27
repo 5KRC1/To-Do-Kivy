@@ -1,0 +1,158 @@
+<MainScreen>:
+  name: "main"
+
+  MDBoxLayout:
+    orientation: "vertical"
+    
+    MDBoxLayout:
+      orientation: "horizontal"
+      spacing: 20
+      padding: [20, 0, 20, 0]
+      size_hint_y: .1
+
+      MDTextField:
+        hint_text: "Task..."
+        id: task
+
+      MDRectangleFlatButton:
+        text: "Add"
+        on_press: root.addTask()
+
+    ScrollView:
+
+      MDList:
+        id: mdlist
+
+<Task>:
+  on_release: app.showDialogView(self)
+
+  IconLeftWidget:
+    icon: "chevron-up"
+    on_press: app.moveUp(root)
+
+  IconRightWidget:
+    icon: "chevron-down"
+    on_press: app.moveDown(root)
+
+<LoginScreen>:
+  name: "login"
+  MDRectangleFlatButton:
+    text: "LOGIN"
+
+<DialogContentView>:
+  orientation: "vertical"
+  spacing: "10dp"
+  size_hint: 1, None
+  height: "330dp"
+
+  ScrollView:
+    size_hint_y: 1
+    MDLabel:
+      text: root.text
+      text_size: self.width, None
+      syze_hint_y: None
+      height: self.texture_size[1]
+
+  MDBoxLayout:
+    orientation: "horizontal"
+    size_hint_y: .1
+
+    AnchorLayout:
+      MDIconButton:
+        icon: "delete-outline"
+        on_press: app.deleteTask(root.item)
+
+    AnchorLayout:
+      MDIconButton:
+        icon: "pencil-outline"
+        on_press: app.showDialogEdit(root.item)
+
+    AnchorLayout:
+      MDIconButton:
+        icon: "check"
+        on_press: app.check(root.item)
+
+<DialogContentEdit>:
+  orientation: "vertical"
+  apacing: "10dp"
+  size_hint: 1, None
+  height: "330dp"
+
+  MDTextField:
+    size_hint_y: 1
+    id: new_text
+    text: root.value
+
+  MDBoxLayout:
+    orientation: "horizontal"
+    size_hint_y: .1
+
+    AnchorLayout:
+      MDIconButton:
+        icon: "check"
+        on_press: app.editTask(root.item)
+
+    AnchorLayout:
+      MDIconButton:
+        icon: "close"
+        on_press: app.cancelEdit()
+
+
+<DrawerList>:
+  OneLineListItem:
+    theme_text_color: "Custom"
+    text: "Main Screen"
+    on_press: app.root.ids.manager.current = "main"; app.root.ids.nav_drawer.set_state("close")
+    on_release: self.parent.set_color_item(self)
+
+  OneLineListItem:
+    theme_text_color: "Custom"
+    text: "Login Screen"
+    on_press: app.root.ids.manager.current = "login"; app.root.ids.nav_drawer.set_state("close")
+    on_release: self.parent.set_color_item(self) 
+
+
+MDScreen:
+  MDNavigationLayout:
+    ScreenManager:
+      MDScreen:
+        MDToolbar:
+          title: "To-Do"
+          elevation: 10
+          pos_hint: {"top": 1}
+          left_action_items: [["menu", lambda x: nav_drawer.set_state("open")]]
+
+        ScreenManager:
+          id: manager
+          size_hint_y: .9
+
+          MainScreen:
+            id: main
+
+          LoginScreen:
+            id: login
+
+    MDNavigationDrawer:
+      id: nav_drawer
+
+      MDBoxLayout:
+        orientation: "vertical"
+        padding: "8dp"
+        spacing: "8dp"
+
+        MDLabel:
+          text: "ToDo"
+          font_style: "Button"
+          size_hint_y: None
+          height: self.texture_size[1]
+
+        MDLabel:
+          text: "made with KivyMD"
+          font_style: "Caption"
+          size_hint_y: None
+          height: self.texture_size[1]
+
+        ScrollView:
+          DrawerList:
+            id: drawer_list
+            
